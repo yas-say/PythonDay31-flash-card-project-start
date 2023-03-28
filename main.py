@@ -3,25 +3,18 @@ import pandas
 import random
 
 BACKGROUND_COLOR = "#B1DDC6"
-data_dict = {}
-title =  None
-word = None
-def wrong_def():
+# data_dict = {}
+# title =  None
+# word = None
 
-    global data_dict, title, word
-    ind = random.randint(0,100)
-    canvas.itemconfig(title,text="")
-    canvas.itemconfig(word,text="")
-    title = canvas.create_text(400, 150, text="French", font=("Ariel", 40, "italic"))
-    word = canvas.create_text(400, 263, text=data_dict['French'][ind], font=("Ariel", 60, "bold"))
+data = pandas.read_csv("./data/french_words.csv")
+data_dict = data.to_dict(orient="records")
 
-def right_def():
-    global data_dict, title, word
-    ind = random.randint(0,100)
-    canvas.itemconfig(title,text="")
-    canvas.itemconfig(word,text="")
-    title = canvas.create_text(400, 150, text="French", font=("Ariel", 40, "italic"))
-    word = canvas.create_text(400, 263, text=data_dict['French'][ind], font=("Ariel", 60, "bold"))
+
+def next_card():
+    current_card = random.choice(data_dict)
+    canvas.itemconfig(title, text="French")
+    canvas.itemconfig(word, text=current_card["French"])
 
 
 window = Tk()
@@ -37,15 +30,13 @@ word = canvas.create_text(400, 263, text="word", font=("Ariel", 60, "bold"))
 canvas.grid(column=0, row=0, columnspan=2)
 
 wrong_image = PhotoImage(file="./images/wrong.png")
-wrong_button = Button(image=wrong_image, highlightthickness=0, command=wrong_def)
+wrong_button = Button(image=wrong_image, highlightthickness=0, command=next_card)
 wrong_button.grid(column=0, row=1)
 
 right_image = PhotoImage(file="./images/right.png")
-right_button = Button(image=right_image, highlightthickness=0, command=right_def)
+right_button = Button(image=right_image, highlightthickness=0, command=next_card)
 right_button.grid(column=1, row=1)
 
-data =pandas.read_csv("./data/french_words.csv")
-data_dict = data.to_dict()
-
+next_card()
 
 window.mainloop()
