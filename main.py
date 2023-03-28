@@ -6,25 +6,35 @@ BACKGROUND_COLOR = "#B1DDC6"
 # data_dict = {}
 # title =  None
 # word = None
-
+current_card={}
 data = pandas.read_csv("./data/french_words.csv")
 data_dict = data.to_dict(orient="records")
 
 
 def next_card():
+    global current_card, flip_timer
+    window.after_cancel(flip_timer)
     current_card = random.choice(data_dict)
-    canvas.itemconfig(title, text="French")
-    canvas.itemconfig(word, text=current_card["French"])
+    canvas.itemconfig(title, text="French", fill="black")
+    canvas.itemconfig(word, text=current_card["French"], fill="black")
+    canvas.itemconfig(bgrnd, image=canvas_front_image)
+    flip_timer = window.after(3000, flip_card)
 
+
+def flip_card():
+    canvas.itemconfig(title, text="English", fill="white")
+    canvas.itemconfig(word, text=current_card["English"], fill="white")
+    canvas.itemconfig(bgrnd, image=canvas_back_image)
 
 window = Tk()
 window.title("Flash cards")
 window.config(padx=50, pady=50, bg=BACKGROUND_COLOR)
+flip_timer = window.after(3000, flip_card)
 
 canvas = Canvas(height=526, width=800, highlightthickness=0, bg=BACKGROUND_COLOR)
 canvas_back_image = PhotoImage(file="./images/card_back.png")
 canvas_front_image = PhotoImage(file="./images/card_front.png")
-canvas.create_image(400, 263, image=canvas_front_image)
+bgrnd = canvas.create_image(400, 263, image=canvas_front_image)
 title = canvas.create_text(400, 150, text="Title", font=("Ariel", 40, "italic"))
 word = canvas.create_text(400, 263, text="word", font=("Ariel", 60, "bold"))
 canvas.grid(column=0, row=0, columnspan=2)
